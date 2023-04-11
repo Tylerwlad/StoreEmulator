@@ -3,25 +3,24 @@ package Product;
 import java.util.Objects;
 
 abstract class Product {
-    private String title;
-    private double purchasePrice;
-    private int quantity;
-    private double volume;
+    protected String title;
+    protected double purchasePrice;
+    protected int quantity;
+    protected double volume;
+
+    public Product(String title, double purchasePrice, int quantity, double volume) {
+        this.title = title;
+        this.purchasePrice = purchasePrice;
+        this.quantity = quantity;
+        this.volume = volume;
+    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public double getPurchasePrice() {
         return purchasePrice;
-    }
-
-    public void setPurchasePrice(double purchasePrice) {
-        this.purchasePrice = purchasePrice;
     }
 
     public int getQuantity() {
@@ -34,10 +33,6 @@ abstract class Product {
 
     public double getVolume() {
         return volume;
-    }
-
-    public void setVolume(double volume) {
-        this.volume = volume;
     }
 
     @Override

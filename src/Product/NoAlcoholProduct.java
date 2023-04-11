@@ -5,15 +5,14 @@ public class NoAlcoholProduct extends Product {
     private GroupNoAlcohol groupNoAlcohol;
     private String structure;
 
-    public NoAlcoholProduct(GroupNoAlcohol groupNoAlcohol, String structure, String title, double purchasePrice,
-    int quantity, double volume) {
-        setTitle(title);
-        setPurchasePrice(purchasePrice);
-        setQuantity(quantity);
-        setVolume(volume);
+    public NoAlcoholProduct(String title, double purchasePrice, int quantity, double volume,
+                            GroupNoAlcohol groupNoAlcohol, String structure) {
+        super(title, purchasePrice, quantity, volume);
         this.groupNoAlcohol = groupNoAlcohol;
         this.structure = structure;
     }
+
+
     public GroupNoAlcohol getGroupNoAlcohol() {
         return groupNoAlcohol;
     }
@@ -27,6 +26,10 @@ public class NoAlcoholProduct extends Product {
         return "NoAlcoholProduct{" +
                 "groupNoAlcohol=" + groupNoAlcohol +
                 ", structure='" + structure + '\'' +
+                ", title='" + title + '\'' +
+                ", purchasePrice=" + purchasePrice +
+                ", quantity=" + quantity +
+                ", volume=" + volume +
                 '}';
     }
 }
