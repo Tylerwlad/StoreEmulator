@@ -1,30 +1,29 @@
 package Product;
 
-public class NoAlcoholProduct extends Product {
+public class AlcoholProduct extends Product {
     private GroupNoAlcohol groupNoAlcohol;
-    private String structure;
+    private double alcoholStrength;
 
-    public NoAlcoholProduct(String title, double purchasePrice, int quantity, double volume,
-                            GroupNoAlcohol groupNoAlcohol, String structure) {
+    public AlcoholProduct(String title, double purchasePrice, int quantity, double volume,
+                          GroupNoAlcohol groupNoAlcohol, double alcoholStrength) {
         super(title, purchasePrice, quantity, volume);
         this.groupNoAlcohol = groupNoAlcohol;
-        this.structure = structure;
+        this.alcoholStrength = alcoholStrength;
     }
-
 
     public GroupNoAlcohol getGroupNoAlcohol() {
         return groupNoAlcohol;
     }
 
-    public String getStructure() {
-        return structure;
+    public double getAlcoholStrength() {
+        return alcoholStrength;
     }
 
     @Override
     public String toString() {
-        return "NoAlcoholProduct{" +
+        return "AlcoholProduct{" +
                 "groupNoAlcohol=" + groupNoAlcohol +
-                ", structure='" + structure + '\'' +
+                ", alcoholStrength=" + alcoholStrength +
                 ", title='" + title + '\'' +
                 ", purchasePrice=" + purchasePrice +
                 ", quantity=" + quantity +
