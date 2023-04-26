@@ -6,12 +6,20 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class FileBackedTradeManager implements TradeManager {
     HashMap<Integer, Product> nomenclature = new HashMap<>();
     private static int countProduct;
+    private final Month currentMonth = Month.APRIL;
+    private final LocalDateTime startDataTime = LocalDateTime.of(2023, currentMonth, 1, 8, 0);
+    private final int TheNumberOfHoursTheStoreIsOpen = 13;
+    private final int TheNumberOfHoursTheStoreIsClose = 24 - TheNumberOfHoursTheStoreIsOpen;
+
     @Override
     public void saveManager() {
         // записать продукты в csv
@@ -53,7 +61,30 @@ public class FileBackedTradeManager implements TradeManager {
     }
 
     @Override
-    public void Trade() {
+    public void trade() {
+        LocalDateTime currentDataTime = startDataTime;
+        Random random = new Random();
+        while (currentDataTime.getMonth().equals(currentMonth)) {
+            System.out.println("Новый день, магазин открывается");
+            System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
+            for (int i = 1; i <= TheNumberOfHoursTheStoreIsOpen; i++) {
+                currentDataTime = currentDataTime.plusHours(1);
+                // начало торговли
+                for (int j = 1; j <= random.nextInt(11); j++) {
+                    System.out.println(j + " покупатель");
+                    for (int k = 1; k <= random.nextInt(11); k++) {
+                        // основной цикл покупок
+                        int currentProduct = random.nextInt(nomenclature.size());
+                        System.out.println(nomenclature.get(currentProduct).getTitle() + " " +
+                                nomenclature.get(currentProduct).getVolume() + "л.");
 
+                    }
+                }
+                //завершение торговли
+                System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
+            }
+            currentDataTime = currentDataTime.plusHours(TheNumberOfHoursTheStoreIsClose);
+            System.out.println("Магазин закрывается");
+        }
     }
 }

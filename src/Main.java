@@ -4,5 +4,6 @@ public class Main {
     public static void main(String[] args) {
         TradeManager tradeManager = new FileBackedTradeManager();
         tradeManager.loadManager();
+        tradeManager.trade();
     }
 }

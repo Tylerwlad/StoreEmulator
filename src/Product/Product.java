@@ -16,14 +16,7 @@ public abstract class Product {
     }
 
     protected class Sales {
-        protected HashMap<Markup, Integer> salesCounter;
-        Sales() {
-            salesCounter = new HashMap<>();
-            salesCounter.put(Markup.SEVEN, 0);
-            salesCounter.put(Markup.EIGHT, 0);
-            salesCounter.put(Markup.TEN, 0);
-            salesCounter.put(Markup.FIFTEEN, 0); // Уместна ли подобная инициализация?
-        }
+        protected HashMap<Markup, Integer> salesCounter = new HashMap<>();
         Markup getMarkup () {
             Markup markup = Markup.FIFTEEN;
             // через свитч выбор нужного значения наценки исходя из ситуации
@@ -31,10 +24,10 @@ public abstract class Product {
         }
     }
     public void incrementSalesCounter(Markup markup) {
-        sales.salesCounter.put(markup, sales.salesCounter.get(markup) + 1);
+        sales.salesCounter.put(markup, sales.salesCounter.getOrDefault(markup, 0) + 1);
     }
     public Integer getSalesCounter(Markup markup) {
-        return sales.salesCounter.get(markup);
+        return sales.salesCounter.getOrDefault(markup, 0);
     }
 
     public Product(String title, double purchasePrice, int quantity, double volume) {
