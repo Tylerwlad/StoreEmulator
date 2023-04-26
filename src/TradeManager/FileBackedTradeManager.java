@@ -17,8 +17,6 @@ public class FileBackedTradeManager implements TradeManager {
     private static int countProduct;
     private final Month currentMonth = Month.APRIL;
     private final LocalDateTime startDataTime = LocalDateTime.of(2023, currentMonth, 1, 8, 0);
-    private final int TheNumberOfHoursTheStoreIsOpen = 13;
-    private final int TheNumberOfHoursTheStoreIsClose = 24 - TheNumberOfHoursTheStoreIsOpen;
 
     @Override
     public void saveManager() {
@@ -63,16 +61,20 @@ public class FileBackedTradeManager implements TradeManager {
     @Override
     public void trade() {
         LocalDateTime currentDataTime = startDataTime;
+        int theNumberOfHoursTheStoreIsOpen = 13;
+        int theNumberOfHoursTheStoreIsClose = 24 - theNumberOfHoursTheStoreIsOpen;
+        int maximumNumberOfClientsPerHour = 10;
+        int maximumNumberOfPurchasesPerClients = 10;
         Random random = new Random();
         while (currentDataTime.getMonth().equals(currentMonth)) {
             System.out.println("Новый день, магазин открывается");
             System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
-            for (int i = 1; i <= TheNumberOfHoursTheStoreIsOpen; i++) {
+            for (int i = 1; i <= theNumberOfHoursTheStoreIsOpen; i++) {
                 currentDataTime = currentDataTime.plusHours(1);
                 // начало торговли
-                for (int j = 1; j <= random.nextInt(11); j++) {
+                for (int j = 1; j <= random.nextInt(maximumNumberOfClientsPerHour + 1); j++) {
                     System.out.println(j + " покупатель");
-                    for (int k = 1; k <= random.nextInt(11); k++) {
+                    for (int k = 1; k <= random.nextInt(maximumNumberOfPurchasesPerClients + 1); k++) {
                         // основной цикл покупок
                         int currentProduct = random.nextInt(nomenclature.size());
                         System.out.println(nomenclature.get(currentProduct).getTitle() + " " +
@@ -83,7 +85,7 @@ public class FileBackedTradeManager implements TradeManager {
                 //завершение торговли
                 System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
             }
-            currentDataTime = currentDataTime.plusHours(TheNumberOfHoursTheStoreIsClose);
+            currentDataTime = currentDataTime.plusHours(theNumberOfHoursTheStoreIsClose);
             System.out.println("Магазин закрывается");
         }
     }
