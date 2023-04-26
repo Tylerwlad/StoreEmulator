@@ -4,12 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class FileBackedTradeManager implements TradeManager {
-    HashMap <LocalDateTime, Integer> salesHistory = new HashMap<>();
     @Override
     public void saveManager() {
 
