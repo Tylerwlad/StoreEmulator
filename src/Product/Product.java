@@ -15,21 +15,6 @@ public abstract class Product {
         return sales;
     }
 
-    protected class Sales {
-        protected HashMap<Markup, Integer> salesCounter = new HashMap<>();
-        Markup getMarkup () {
-            Markup markup = Markup.FIFTEEN;
-            // через свитч выбор нужного значения наценки исходя из ситуации
-            return markup;
-        }
-    }
-    public void incrementSalesCounter(Markup markup) {
-        sales.salesCounter.put(markup, sales.salesCounter.getOrDefault(markup, 0) + 1);
-    }
-    public Integer getSalesCounter(Markup markup) {
-        return sales.salesCounter.getOrDefault(markup, 0);
-    }
-
     public Product(String title, double purchasePrice, int quantity, double volume) {
         this.title = title;
         this.purchasePrice = purchasePrice;

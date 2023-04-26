@@ -77,6 +77,11 @@ public class FileBackedTradeManager implements TradeManager {
                     for (int k = 1; k <= random.nextInt(maximumNumberOfPurchasesPerClients + 1); k++) {
                         // основной цикл покупок
                         int currentProduct = random.nextInt(nomenclature.size());
+
+                        HashMap<Integer, Integer> counterOfIdenticalProductsPerClient = new HashMap<>();
+                        counterOfIdenticalProductsPerClient.put(currentProduct,
+                                counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
+
                         System.out.println(nomenclature.get(currentProduct).getTitle() + " " +
                                 nomenclature.get(currentProduct).getVolume() + "л.");
 
