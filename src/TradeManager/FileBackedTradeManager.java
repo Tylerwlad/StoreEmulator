@@ -1,15 +1,19 @@
 package TradeManager;
 
+import Product.*;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FileBackedTradeManager implements TradeManager {
+    HashMap<Integer, Product> nomenclature = new HashMap<>();
     @Override
     public void saveManager() {
-
+        // записать продукты в csv
     }
 
     @Override
@@ -30,8 +34,15 @@ public class FileBackedTradeManager implements TradeManager {
         }
         for (String s: fileInArrayList) {
             String[] a = s.split(", ");
-            for (int i = 0; i < a.length; i++) {
-                System.out.println(a[i]);
+            for (GroupNoAlcohol alcohol: GroupNoAlcohol.values()) {
+                if (alcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
+                    System.out.println("Создан алкогольный напиток - " + a[2].substring(1,a[2].length()-1));
+                }
+            }
+            for (GroupAlcohol noAlcohol: GroupAlcohol.values()) {
+                if (noAlcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
+                    System.out.println("Создан безалкогольный напиток - " + a[2].substring(1,a[2].length()-1));
+                }
             }
         }
     }
