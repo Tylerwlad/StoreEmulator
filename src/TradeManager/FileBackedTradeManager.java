@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 public class FileBackedTradeManager implements TradeManager {
     HashMap<Integer, Product> nomenclature = new HashMap<>();
+    private static int countProduct;
     @Override
     public void saveManager() {
         // записать продукты в csv
@@ -34,14 +35,18 @@ public class FileBackedTradeManager implements TradeManager {
         }
         for (String s: fileInArrayList) {
             String[] a = s.split(", ");
-            for (GroupNoAlcohol alcohol: GroupNoAlcohol.values()) {
-                if (alcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
-                    System.out.println("Создан алкогольный напиток - " + a[2].substring(1,a[2].length()-1));
+            for (GroupNoAlcohol noAlcohol: GroupNoAlcohol.values()) {
+                if (noAlcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
+                    nomenclature.put(countProduct++, new NoAlcoholProduct(a[0].substring(1,a[0].length()-1),
+                            Double.parseDouble(a[1]), Integer.parseInt(a[5]), Double.parseDouble(a[3]),
+                            noAlcohol, a[4].substring(1, a[4].length()-1)));
                 }
             }
-            for (GroupAlcohol noAlcohol: GroupAlcohol.values()) {
-                if (noAlcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
-                    System.out.println("Создан безалкогольный напиток - " + a[2].substring(1,a[2].length()-1));
+            for (GroupAlcohol alcohol: GroupAlcohol.values()) {
+                if (alcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
+                    nomenclature.put(countProduct++, new AlcoholProduct(a[0].substring(1,a[0].length()-1),
+                            Double.parseDouble(a[1]), Integer.parseInt(a[5]), Double.parseDouble(a[3]),
+                            alcohol, Double.parseDouble(a[4].substring(0, a[4].length()-1))));
                 }
             }
         }

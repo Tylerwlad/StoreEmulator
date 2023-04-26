@@ -1,18 +1,18 @@
 package Product;
 
 public class AlcoholProduct extends Product {
-    private GroupNoAlcohol groupNoAlcohol;
+    private GroupAlcohol groupAlcohol;
     private double alcoholStrength;
 
     public AlcoholProduct(String title, double purchasePrice, int quantity, double volume,
-                          GroupNoAlcohol groupNoAlcohol, double alcoholStrength) {
+                          GroupAlcohol groupAlcohol, double alcoholStrength) {
         super(title, purchasePrice, quantity, volume);
-        this.groupNoAlcohol = groupNoAlcohol;
+        this.groupAlcohol = groupAlcohol;
         this.alcoholStrength = alcoholStrength;
     }
 
-    public GroupNoAlcohol getGroupNoAlcohol() {
-        return groupNoAlcohol;
+    public GroupAlcohol getGroupAlcohol() {
+        return groupAlcohol;
     }
 
     public double getAlcoholStrength() {
@@ -22,7 +22,7 @@ public class AlcoholProduct extends Product {
     @Override
     public String toString() {
         return "AlcoholProduct{" +
-                "groupNoAlcohol=" + groupNoAlcohol +
+                "groupAlcohol=" + groupAlcohol +
                 ", alcoholStrength=" + alcoholStrength +
                 ", title='" + title + '\'' +
                 ", purchasePrice=" + purchasePrice +
