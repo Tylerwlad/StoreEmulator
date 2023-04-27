@@ -64,4 +64,5 @@ public abstract class Product {
 
     @Override
     public abstract String toString();
+    public abstract String toStringSave();
 }

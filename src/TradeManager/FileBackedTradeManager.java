@@ -17,7 +17,15 @@ public class FileBackedTradeManager implements TradeManager {
 
     @Override
     public void saveManager() {
-        // записать продукты в csv
+        StringBuilder builder = new StringBuilder();
+        for (Integer number: nomenclature.keySet()) {
+            builder.append(nomenclature.get(number).toStringSave()).append("\n");
+        }
+        try (Writer fileWriter = new FileWriter("src\\WareHouseSave.csv")) {
+            fileWriter.write(builder.toString());
+        } catch (Exception e) {
+            System.out.println("Файл не найден");
+        }
     }
 
     @Override
@@ -57,6 +65,7 @@ public class FileBackedTradeManager implements TradeManager {
 
     @Override
     public void trade() {
+        loadManager();
         LocalDateTime currentDataTime = startDataTime;
         int theNumberOfHoursTheStoreIsOpen = 13;
         int theNumberOfHoursTheStoreIsClose = 24 - theNumberOfHoursTheStoreIsOpen;
@@ -105,6 +114,7 @@ public class FileBackedTradeManager implements TradeManager {
             }
         }
         report();
+        saveManager();
     }
     private void printPurchaseInformation (int currentProduct, Markup markup) {
         StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).toString());

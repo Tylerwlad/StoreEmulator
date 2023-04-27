@@ -23,4 +23,9 @@ public class AlcoholProduct extends Product {
     public String toString() {
         return title + ' ' + volume + 'л';
     }
+    @Override
+    public String toStringSave() {
+        return (char)34 + title + (char)34 + ", " + purchasePrice + ", " + (char)34 + groupAlcohol.getTranslation() +
+                (char)34 + ", " + volume + ", " + alcoholStrength + (char)37 + ", " + quantity;
+    }
 }
