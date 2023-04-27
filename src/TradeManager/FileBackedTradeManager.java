@@ -74,17 +74,21 @@ public class FileBackedTradeManager implements TradeManager {
                 // начало торговли
                 for (int j = 1; j <= random.nextInt(maximumNumberOfClientsPerHour + 1); j++) {
                     System.out.println(j + " покупатель");
+
+                    HashMap<Integer, Integer> counterOfIdenticalProductsPerClient = new HashMap<>();
+
                     for (int k = 1; k <= random.nextInt(maximumNumberOfPurchasesPerClients + 1); k++) {
                         // основной цикл покупок
                         int currentProduct = random.nextInt(nomenclature.size());
 
-                        HashMap<Integer, Integer> counterOfIdenticalProductsPerClient = new HashMap<>();
                         counterOfIdenticalProductsPerClient.put(currentProduct,
                                 counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
 
-                        System.out.println(nomenclature.get(currentProduct).getTitle() + " " +
-                                nomenclature.get(currentProduct).getVolume() + "л.");
+                        Markup markup = nomenclature.get(currentProduct).getSales().getMarkup(
+                                counterOfIdenticalProductsPerClient.get(currentProduct), currentDataTime);
+                        nomenclature.get(currentProduct).getSales().incrementSalesCounter(markup);
 
+                        printPurchaseInformation(currentProduct, markup);
                     }
                 }
                 //завершение торговли
@@ -93,5 +97,33 @@ public class FileBackedTradeManager implements TradeManager {
             currentDataTime = currentDataTime.plusHours(theNumberOfHoursTheStoreIsClose);
             System.out.println("Магазин закрывается");
         }
+        for (Integer integer: nomenclature.keySet()) {
+            System.out.println(integer + " номер, количество продаж - " +
+                    nomenclature.get(integer).getSales().getSalesCounter());
+        }
+    }
+    private void printPurchaseInformation (int currentProduct, Markup markup) {
+        StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).getTitle());
+        builder.append(" ");
+        builder.append(nomenclature.get(currentProduct).getVolume());
+        switch (markup) {
+            case SEVEN -> {
+                builder.append("л., наценка на товар 7%, цена продажи - ");
+                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.07)));
+            }
+            case EIGHT -> {
+                builder.append("л., наценка на товар 8%, цена продажи - ");
+                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.08)));
+            }
+            case TEN -> {
+                builder.append("л., наценка на товар 10%, цена продажи - ");
+                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.1)));
+            }
+            case FIFTEEN -> {
+                builder.append("л., наценка на товар 15%, цена продажи - ");
+                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.15)));
+            }
+        }
+        System.out.println(builder);
     }
 }
