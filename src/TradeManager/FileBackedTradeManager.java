@@ -2,10 +2,7 @@ package TradeManager;
 
 import Product.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -107,29 +104,60 @@ public class FileBackedTradeManager implements TradeManager {
                 }
             }
         }
+        report();
     }
     private void printPurchaseInformation (int currentProduct, Markup markup) {
-        StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).getTitle());
-        builder.append(" ");
-        builder.append(nomenclature.get(currentProduct).getVolume());
+        StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).toString());
         switch (markup) {
             case SEVEN -> {
-                builder.append("л., наценка на товар 7%, цена продажи - ");
+                builder.append(", наценка на товар 7%, цена продажи - ");
                 builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.07)));
             }
             case EIGHT -> {
-                builder.append("л., наценка на товар 8%, цена продажи - ");
+                builder.append(", наценка на товар 8%, цена продажи - ");
                 builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.08)));
             }
             case TEN -> {
-                builder.append("л., наценка на товар 10%, цена продажи - ");
+                builder.append(", наценка на товар 10%, цена продажи - ");
                 builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.1)));
             }
             case FIFTEEN -> {
-                builder.append("л., наценка на товар 15%, цена продажи - ");
+                builder.append(", наценка на товар 15%, цена продажи - ");
                 builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.15)));
             }
         }
         System.out.println(builder);
+    }
+    private void report () {
+        double totalProfit = 0;
+        int expenseOnPurchases = 0;
+        StringBuilder builder = new StringBuilder();
+        for (Integer number: nomenclature.keySet()) {
+            int quantityOfProductSold = 0;
+            expenseOnPurchases += (nomenclature.get(number).getPurchase() * 150 *
+                    nomenclature.get(number).getPurchasePrice());
+            for (Markup markup: nomenclature.get(number).getSales().getSalesCounter().keySet()){
+                quantityOfProductSold += nomenclature.get(number).getSales().getSalesCounter().get(markup);
+                switch (markup) {
+                    case SEVEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
+                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.07);
+                    case EIGHT -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
+                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.08);
+                    case TEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
+                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.1);
+                    case FIFTEEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
+                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.15);
+                }
+            }
+            builder.append(nomenclature.get(number)).append(", проданно: ").append(quantityOfProductSold).
+                    append(", закупленно: ").append(nomenclature.get(number).getPurchase() * 150).append("\n");
+        }
+        builder.append("Общая прибыль ").append(totalProfit).append("\n").append("Расходы на закуп ")
+                .append(expenseOnPurchases);
+        try (Writer fileWriter = new FileWriter("src\\report.txt")) {
+            fileWriter.write(builder.toString());
+        } catch (Exception e) {
+            System.out.println("Файл не найден");
+        }
     }
 }

@@ -21,13 +21,6 @@ public class AlcoholProduct extends Product {
 
     @Override
     public String toString() {
-        return "AlcoholProduct{" +
-                "groupAlcohol=" + groupAlcohol +
-                ", alcoholStrength=" + alcoholStrength +
-                ", title='" + title + '\'' +
-                ", purchasePrice=" + purchasePrice +
-                ", quantity=" + quantity +
-                ", volume=" + volume +
-                '}';
+        return title + ' ' + volume + 'л';
     }
 }
