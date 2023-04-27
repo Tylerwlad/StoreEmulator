@@ -80,7 +80,9 @@ public class FileBackedTradeManager implements TradeManager {
                     for (int k = 1; k <= random.nextInt(maximumNumberOfPurchasesPerClients + 1); k++) {
                         // основной цикл покупок
                         int currentProduct = random.nextInt(nomenclature.size());
-
+                        while (nomenclature.get(currentProduct).getQuantity() <= 0) {
+                            currentProduct = random.nextInt(nomenclature.size());
+                        }
                         counterOfIdenticalProductsPerClient.put(currentProduct,
                                 counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
 
@@ -89,6 +91,8 @@ public class FileBackedTradeManager implements TradeManager {
                         nomenclature.get(currentProduct).getSales().incrementSalesCounter(markup);
 
                         printPurchaseInformation(currentProduct, markup);
+
+                        nomenclature.get(currentProduct).setQuantity(nomenclature.get(currentProduct).getQuantity() - 1);
                     }
                 }
                 //завершение торговли
@@ -96,10 +100,12 @@ public class FileBackedTradeManager implements TradeManager {
             }
             currentDataTime = currentDataTime.plusHours(theNumberOfHoursTheStoreIsClose);
             System.out.println("Магазин закрывается");
-        }
-        for (Integer integer: nomenclature.keySet()) {
-            System.out.println(integer + " номер, количество продаж - " +
-                    nomenclature.get(integer).getSales().getSalesCounter());
+            for (Integer integer: nomenclature.keySet()) {
+                if (nomenclature.get(integer).getQuantity() < 10) {
+                    nomenclature.get(integer).setQuantity(nomenclature.get(integer).getQuantity() + 150);
+                    nomenclature.get(integer).setPurchase(nomenclature.get(integer).getPurchase() + 1);
+                }
+            }
         }
     }
     private void printPurchaseInformation (int currentProduct, Markup markup) {
