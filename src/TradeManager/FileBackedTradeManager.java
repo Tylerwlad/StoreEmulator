@@ -74,11 +74,14 @@ public class FileBackedTradeManager implements TradeManager {
         int maximumNumberOfClientsPerHour = 10;
         Random random = new Random();
         while (currentDataTime.getMonth().equals(currentMonth)) {
-            System.out.println("Новый день, магазин открывается");
+            System.out.println("Новый день, магазин открывается \n");
             System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
             for (int i = 1; i <= theNumberOfHoursTheStoreIsOpen; i++) {
                 currentDataTime = currentDataTime.plusHours(1);
                 int randomClients = random.nextInt(maximumNumberOfClientsPerHour + 1);
+                if (randomClients == 0) {
+                    System.out.println("За данный час покупателей не пришло \n");
+                }
                 for (int j = 1; j <= randomClients; j++) {
                     System.out.println(j + " покупатель");
                     receipts.add(new Receipt(currentDataTime, nomenclature));

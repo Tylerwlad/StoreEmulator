@@ -32,6 +32,9 @@ public class Receipt {
         Random random = new Random();
         boolean isEndProduct = false;
         int randomPurchases = random.nextInt(maximumNumberOfPurchasesPerClients + 1);
+        if (randomPurchases == 0) {
+            System.out.println("Покупатель ушел без покупок");
+        }
         for (int i = 1; i <= randomPurchases; i++) {
             int currentProduct = random.nextInt(nomenclature.size());
             while (nomenclature.get(currentProduct).getQuantity() <= 0) {
@@ -72,11 +75,9 @@ public class Receipt {
 
     private ExtraCharge definitionExtraCharge(int i) {
         ExtraCharge extraCharge = ExtraCharge.TEN;
-        if (i >= 2) {
-            if (products.get(i).equals(products.get(i - 1)) && products.get(i).equals(products.get(i - 2))) {
+        if ((i >= 2) && (products.get(i).equals(products.get(i - 1))) && (products.get(i).equals(products.get(i - 2)))) {
                 extraCharge = ExtraCharge.SEVEN;
-            }
-        } else if ((timeOfPurchase.getHour() >= 18) && (timeOfPurchase.getHour() <= 20)) {
+        } else if ((timeOfPurchase.getHour() > 18) && (timeOfPurchase.getHour() <= 20)) {
             extraCharge = ExtraCharge.EIGHT;
         } else if ((timeOfPurchase.getDayOfWeek().equals(DayOfWeek.SATURDAY)) ||
                 (timeOfPurchase.getDayOfWeek().equals(DayOfWeek.SUNDAY))) {
