@@ -12,18 +12,11 @@ public class Receipt {
     private final List<Product> products;
     private final HashMap<Integer, Product> nomenclature;
 
-
-    private final HashMap<Integer, Integer> counterOfIdenticalProductsPerClient = new HashMap<>();
-
     public Receipt(LocalDateTime timeOfPurchase, HashMap<Integer, Product> nomenclature) {
         this.timeOfPurchase = timeOfPurchase;
         products = new ArrayList<>();
         this.nomenclature = nomenclature;
         creatingPurchasesInAReceipt();
-    }
-
-    public HashMap<Integer, Integer> getCounterOfIdenticalProductsPerClient() {
-        return counterOfIdenticalProductsPerClient;
     }
 
     public LocalDateTime getTimeOfPurchase() {
@@ -37,15 +30,27 @@ public class Receipt {
     private void creatingPurchasesInAReceipt() {
         int maximumNumberOfPurchasesPerClients = 10;
         Random random = new Random();
+        boolean isEndProduct = false;
         int randomPurchases = random.nextInt(maximumNumberOfPurchasesPerClients + 1);
         for (int i = 1; i <= randomPurchases; i++) {
             int currentProduct = random.nextInt(nomenclature.size());
             while (nomenclature.get(currentProduct).getQuantity() <= 0) {
-                //TODO: сделать проверку на расход всех товаров, бракованные условия
+                int count = 0;
+                for (Integer integer : nomenclature.keySet()) {
+                    if (nomenclature.get(integer).getQuantity() == 0) {
+                        count++;
+                    }
+                }
+                if (count == nomenclature.size()) {
+                    System.out.println("Товары закончились");
+                    isEndProduct = true;
+                    break;
+                }
                 currentProduct = random.nextInt(nomenclature.size());
             }
-            counterOfIdenticalProductsPerClient.put(nomenclature.get(currentProduct).getId(),
-                    counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
+            if (isEndProduct) {
+                break;
+            }
             products.add(nomenclature.get(currentProduct));
             nomenclature.get(currentProduct).setQuantity(nomenclature.get(currentProduct).getQuantity() - 1);
         }
