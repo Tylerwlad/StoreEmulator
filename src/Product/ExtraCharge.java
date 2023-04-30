@@ -1,5 +1,5 @@
 package Product;
 
-public enum ExtraСharge {
+public enum ExtraCharge {
     SEVEN, EIGHT, TEN, FIFTEEN
 }

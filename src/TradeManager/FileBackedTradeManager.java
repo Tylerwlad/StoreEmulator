@@ -92,11 +92,11 @@ public class FileBackedTradeManager implements TradeManager {
                         counterOfIdenticalProductsPerClient.put(currentProduct,
                                 counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
 
-                        ExtraСharge extraСharge = nomenclature.get(currentProduct).getSales().getMarkup(
+                        ExtraCharge extraCharge = nomenclature.get(currentProduct).getSales().getMarkup(
                                 counterOfIdenticalProductsPerClient.get(currentProduct), currentDataTime);
-                        nomenclature.get(currentProduct).getSales().incrementSalesCounter(extraСharge);
+                        nomenclature.get(currentProduct).getSales().incrementSalesCounter(extraCharge);
 
-                        printPurchaseInformation(currentProduct, extraСharge);
+                        printPurchaseInformation(currentProduct, extraCharge);
 
                         nomenclature.get(currentProduct).setQuantity(nomenclature.get(currentProduct).getQuantity() - 1);
                     }
@@ -117,9 +117,9 @@ public class FileBackedTradeManager implements TradeManager {
         saveManager();
     }
 
-    private void printPurchaseInformation(int currentProduct, ExtraСharge extraСharge) {
+    private void printPurchaseInformation(int currentProduct, ExtraCharge extraCharge) {
         StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).toString());
-        switch (extraСharge) {
+        switch (extraCharge) {
             case SEVEN -> {
                 builder.append(", наценка на товар 7%, цена продажи - ");
                 builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.07)));
@@ -148,17 +148,17 @@ public class FileBackedTradeManager implements TradeManager {
             int quantityOfProductSold = 0;
             expenseOnPurchases += (nomenclature.get(number).getPurchase() * 150 *
                     nomenclature.get(number).getPurchasePrice());
-            for (ExtraСharge extraСharge : nomenclature.get(number).getSales().getSalesCounter().keySet()) {
-                quantityOfProductSold += nomenclature.get(number).getSales().getSalesCounter().get(extraСharge);
-                switch (extraСharge) {
+            for (ExtraCharge extraCharge : nomenclature.get(number).getSales().getSalesCounter().keySet()) {
+                quantityOfProductSold += nomenclature.get(number).getSales().getSalesCounter().get(extraCharge);
+                switch (extraCharge) {
                     case SEVEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.07);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.07);
                     case EIGHT -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.08);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.08);
                     case TEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.1);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.1);
                     case FIFTEEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.15);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.15);
                 }
             }
             builder.append(nomenclature.get(number)).append(", проданно: ").append(quantityOfProductSold).
