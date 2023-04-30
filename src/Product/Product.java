@@ -8,17 +8,19 @@ public abstract class Product {
     protected int quantity;
     protected double volume;
     protected int purchase;
-    protected Sales sales = new Sales();
-
-    public Sales getSales() {
-        return sales;
-    }
+    private static int countId;
+    private final int id;
 
     public Product(String title, double purchasePrice, int quantity, double volume) {
         this.title = title;
         this.purchasePrice = purchasePrice;
         this.quantity = quantity;
         this.volume = volume;
+        id = countId++;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {

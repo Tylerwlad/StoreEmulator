@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class FileBackedTradeManager implements TradeManager {
-    HashMap<Integer, Product> nomenclature = new HashMap<>();
+    static final HashMap<Integer, Product> nomenclature = new HashMap<>();
+    static List<Receipt> receipts = new ArrayList<>();
     private static int countProduct;
     private final Month currentMonth = Month.APRIL;
     private final LocalDateTime startDataTime = LocalDateTime.of(2023, currentMonth, 1, 8, 0);
@@ -70,39 +72,19 @@ public class FileBackedTradeManager implements TradeManager {
         int theNumberOfHoursTheStoreIsOpen = 13;
         int theNumberOfHoursTheStoreIsClose = 24 - theNumberOfHoursTheStoreIsOpen;
         int maximumNumberOfClientsPerHour = 10;
-        int maximumNumberOfPurchasesPerClients = 10;
         Random random = new Random();
         while (currentDataTime.getMonth().equals(currentMonth)) {
             System.out.println("Новый день, магазин открывается");
             System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
             for (int i = 1; i <= theNumberOfHoursTheStoreIsOpen; i++) {
                 currentDataTime = currentDataTime.plusHours(1);
-                // начало торговли
-                for (int j = 1; j <= random.nextInt(maximumNumberOfClientsPerHour + 1); j++) {
+                int randomClients = random.nextInt(maximumNumberOfClientsPerHour + 1);
+                for (int j = 1; j <= randomClients; j++) {
                     System.out.println(j + " покупатель");
-
-                    HashMap<Integer, Integer> counterOfIdenticalProductsPerClient = new HashMap<>();
-
-                    for (int k = 1; k <= random.nextInt(maximumNumberOfPurchasesPerClients + 1); k++) {
-                        // основной цикл покупок
-                        int currentProduct = random.nextInt(nomenclature.size());
-                        while (nomenclature.get(currentProduct).getQuantity() <= 0) {
-                            currentProduct = random.nextInt(nomenclature.size());
-                        }
-                        counterOfIdenticalProductsPerClient.put(currentProduct,
-                                counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
-
-                        ExtraCharge extraCharge = nomenclature.get(currentProduct).getSales().getMarkup(
-                                counterOfIdenticalProductsPerClient.get(currentProduct), currentDataTime);
-                        nomenclature.get(currentProduct).getSales().incrementSalesCounter(extraCharge);
-
-                        printPurchaseInformation(currentProduct, extraCharge);
-
-                        nomenclature.get(currentProduct).setQuantity(nomenclature.get(currentProduct).getQuantity() - 1);
-                    }
+                    receipts.add(new Receipt(currentDataTime, nomenclature));
                 }
-                //завершение торговли
-                System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов");
+                System.out.println(currentDataTime.getDayOfMonth() + " день, " + currentDataTime.getHour() + " часов" +
+                        "\n");
             }
             currentDataTime = currentDataTime.plusHours(theNumberOfHoursTheStoreIsClose);
             System.out.println("Магазин закрывается");
@@ -117,48 +99,24 @@ public class FileBackedTradeManager implements TradeManager {
         saveManager();
     }
 
-    private void printPurchaseInformation(int currentProduct, ExtraCharge extraCharge) {
-        StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).toString());
-        switch (extraCharge) {
-            case SEVEN -> {
-                builder.append(", наценка на товар 7%, цена продажи - ");
-                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.07)));
-            }
-            case EIGHT -> {
-                builder.append(", наценка на товар 8%, цена продажи - ");
-                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.08)));
-            }
-            case TEN -> {
-                builder.append(", наценка на товар 10%, цена продажи - ");
-                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.1)));
-            }
-            case FIFTEEN -> {
-                builder.append(", наценка на товар 15%, цена продажи - ");
-                builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.15)));
-            }
-        }
-        System.out.println(builder);
-    }
-
     private void report() {
         double totalProfit = 0;
         int expenseOnPurchases = 0;
         StringBuilder builder = new StringBuilder();
+        for (Receipt receipt : receipts) {
+            for (int i = 0; i < receipt.getProducts().size(); i++) {
+                totalProfit += (receipt.getPrice(i) - receipt.getProducts().get(i).getPurchasePrice());
+            }
+        }
         for (Integer number : nomenclature.keySet()) {
             int quantityOfProductSold = 0;
             expenseOnPurchases += (nomenclature.get(number).getPurchase() * 150 *
                     nomenclature.get(number).getPurchasePrice());
-            for (ExtraCharge extraCharge : nomenclature.get(number).getSales().getSalesCounter().keySet()) {
-                quantityOfProductSold += nomenclature.get(number).getSales().getSalesCounter().get(extraCharge);
-                switch (extraCharge) {
-                    case SEVEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.07);
-                    case EIGHT -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.08);
-                    case TEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.1);
-                    case FIFTEEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(extraCharge) * 0.15);
+            for (Receipt receipt : receipts) {
+                for (Product product : receipt.getProducts()) {
+                    if (product.equals(nomenclature.get(number))) {
+                        quantityOfProductSold++;
+                    }
                 }
             }
             builder.append(nomenclature.get(number)).append(", проданно: ").append(quantityOfProductSold).
