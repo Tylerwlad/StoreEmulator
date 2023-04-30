@@ -5,27 +5,30 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Sales {
-    private HashMap<Markup, Integer> salesCounter = new HashMap<>();
-    public Markup getMarkup (int counterOfIdenticalProductsPerClientByInt, LocalDateTime localDateTime) {
-        Markup markup = Markup.TEN;
+    private HashMap<ExtraСharge, Integer> salesCounter = new HashMap<>();
+
+    public ExtraСharge getMarkup(int counterOfIdenticalProductsPerClientByInt, LocalDateTime localDateTime) {
+        ExtraСharge extraСharge = ExtraСharge.TEN;
         if (counterOfIdenticalProductsPerClientByInt > 2) {
-            markup = Markup.SEVEN;
+            extraСharge = ExtraСharge.SEVEN;
         } else if ((localDateTime.getHour() >= 18) && (localDateTime.getHour() <= 20)) {
-            markup = Markup.EIGHT;
-        } else if ((localDateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY))||
-        (localDateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY))) {
-            markup = Markup.FIFTEEN;
+            extraСharge = ExtraСharge.EIGHT;
+        } else if ((localDateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY)) ||
+                (localDateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY))) {
+            extraСharge = ExtraСharge.FIFTEEN;
         }
-        return markup;
+        return extraСharge;
+    } // TODO: переделать метод и сохранение покупок
+
+    public void incrementSalesCounter(ExtraСharge extraСharge) {
+        salesCounter.put(extraСharge, salesCounter.getOrDefault(extraСharge, 0) + 1);
     }
-    public void incrementSalesCounter(Markup markup) {
-        salesCounter.put(markup, salesCounter.getOrDefault(markup, 0) + 1);
-    }
-    public HashMap<Markup, Integer> getSalesCounter() {
+
+    public HashMap<ExtraСharge, Integer> getSalesCounter() {
         return salesCounter;
     }
 
-    public void setSalesCounter(HashMap<Markup, Integer> salesCounter) {
+    public void setSalesCounter(HashMap<ExtraСharge, Integer> salesCounter) {
         this.salesCounter = salesCounter;
     }
 }

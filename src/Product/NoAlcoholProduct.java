@@ -24,9 +24,10 @@ public class NoAlcoholProduct extends Product {
     public String toString() {
         return title + ' ' + volume + 'л';
     }
+
     @Override
     public String toStringSave() {
-        return (char)34 + title + (char)34 + ", " + purchasePrice + ", " + (char)34 + groupNoAlcohol.getTranslation() +
-                (char)34 + ", " + volume + ", " + (char)34 + structure + (char)34 + ", " + quantity;
+        return "\"" + title + "\"" + ", " + purchasePrice + ", " + "\"" + groupNoAlcohol.getTranslation() +
+                "\"" + ", " + volume + ", " + "\"" + structure + "\"" + ", " + quantity;
     }
 }

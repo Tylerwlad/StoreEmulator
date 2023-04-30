@@ -1,5 +1,5 @@
 package Product;
 
-public enum Markup {
+public enum ExtraСharge {
     SEVEN, EIGHT, TEN, FIFTEEN
 }

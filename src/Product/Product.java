@@ -1,6 +1,5 @@
 package Product;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public abstract class Product {
@@ -64,5 +63,6 @@ public abstract class Product {
 
     @Override
     public abstract String toString();
+
     public abstract String toStringSave();
 }

@@ -18,7 +18,7 @@ public class FileBackedTradeManager implements TradeManager {
     @Override
     public void saveManager() {
         StringBuilder builder = new StringBuilder();
-        for (Integer number: nomenclature.keySet()) {
+        for (Integer number : nomenclature.keySet()) {
             builder.append(nomenclature.get(number).toStringSave()).append("\n");
         }
         try (Writer fileWriter = new FileWriter("src\\WareHouseSave.csv")) {
@@ -44,20 +44,20 @@ public class FileBackedTradeManager implements TradeManager {
         } catch (Exception e) {
             System.out.println("Файл не найден");
         }
-        for (String s: fileInArrayList) {
+        for (String s : fileInArrayList) {
             String[] a = s.split(", ");
-            for (GroupNoAlcohol noAlcohol: GroupNoAlcohol.values()) {
-                if (noAlcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
-                    nomenclature.put(countProduct++, new NoAlcoholProduct(a[0].substring(1,a[0].length()-1),
+            for (GroupNoAlcohol noAlcohol : GroupNoAlcohol.values()) {
+                if (noAlcohol.getTranslation().equals(a[2].substring(1, a[2].length() - 1))) {
+                    nomenclature.put(countProduct++, new NoAlcoholProduct(a[0].substring(1, a[0].length() - 1),
                             Double.parseDouble(a[1]), Integer.parseInt(a[5]), Double.parseDouble(a[3]),
-                            noAlcohol, a[4].substring(1, a[4].length()-1)));
+                            noAlcohol, a[4].substring(1, a[4].length() - 1)));
                 }
             }
-            for (GroupAlcohol alcohol: GroupAlcohol.values()) {
-                if (alcohol.getTranslation().equals(a[2].substring(1,a[2].length()-1))) {
-                    nomenclature.put(countProduct++, new AlcoholProduct(a[0].substring(1,a[0].length()-1),
+            for (GroupAlcohol alcohol : GroupAlcohol.values()) {
+                if (alcohol.getTranslation().equals(a[2].substring(1, a[2].length() - 1))) {
+                    nomenclature.put(countProduct++, new AlcoholProduct(a[0].substring(1, a[0].length() - 1),
                             Double.parseDouble(a[1]), Integer.parseInt(a[5]), Double.parseDouble(a[3]),
-                            alcohol, Double.parseDouble(a[4].substring(0, a[4].length()-1))));
+                            alcohol, Double.parseDouble(a[4].substring(0, a[4].length() - 1))));
                 }
             }
         }
@@ -92,11 +92,11 @@ public class FileBackedTradeManager implements TradeManager {
                         counterOfIdenticalProductsPerClient.put(currentProduct,
                                 counterOfIdenticalProductsPerClient.getOrDefault(currentProduct, 0) + 1);
 
-                        Markup markup = nomenclature.get(currentProduct).getSales().getMarkup(
+                        ExtraСharge extraСharge = nomenclature.get(currentProduct).getSales().getMarkup(
                                 counterOfIdenticalProductsPerClient.get(currentProduct), currentDataTime);
-                        nomenclature.get(currentProduct).getSales().incrementSalesCounter(markup);
+                        nomenclature.get(currentProduct).getSales().incrementSalesCounter(extraСharge);
 
-                        printPurchaseInformation(currentProduct, markup);
+                        printPurchaseInformation(currentProduct, extraСharge);
 
                         nomenclature.get(currentProduct).setQuantity(nomenclature.get(currentProduct).getQuantity() - 1);
                     }
@@ -106,7 +106,7 @@ public class FileBackedTradeManager implements TradeManager {
             }
             currentDataTime = currentDataTime.plusHours(theNumberOfHoursTheStoreIsClose);
             System.out.println("Магазин закрывается");
-            for (Integer integer: nomenclature.keySet()) {
+            for (Integer integer : nomenclature.keySet()) {
                 if (nomenclature.get(integer).getQuantity() < 10) {
                     nomenclature.get(integer).setQuantity(nomenclature.get(integer).getQuantity() + 150);
                     nomenclature.get(integer).setPurchase(nomenclature.get(integer).getPurchase() + 1);
@@ -116,9 +116,10 @@ public class FileBackedTradeManager implements TradeManager {
         report();
         saveManager();
     }
-    private void printPurchaseInformation (int currentProduct, Markup markup) {
+
+    private void printPurchaseInformation(int currentProduct, ExtraСharge extraСharge) {
         StringBuilder builder = new StringBuilder(nomenclature.get(currentProduct).toString());
-        switch (markup) {
+        switch (extraСharge) {
             case SEVEN -> {
                 builder.append(", наценка на товар 7%, цена продажи - ");
                 builder.append(String.format("%.2f", (nomenclature.get(currentProduct).getPurchasePrice() * 1.07)));
@@ -138,32 +139,33 @@ public class FileBackedTradeManager implements TradeManager {
         }
         System.out.println(builder);
     }
-    private void report () {
+
+    private void report() {
         double totalProfit = 0;
         int expenseOnPurchases = 0;
         StringBuilder builder = new StringBuilder();
-        for (Integer number: nomenclature.keySet()) {
+        for (Integer number : nomenclature.keySet()) {
             int quantityOfProductSold = 0;
             expenseOnPurchases += (nomenclature.get(number).getPurchase() * 150 *
                     nomenclature.get(number).getPurchasePrice());
-            for (Markup markup: nomenclature.get(number).getSales().getSalesCounter().keySet()){
-                quantityOfProductSold += nomenclature.get(number).getSales().getSalesCounter().get(markup);
-                switch (markup) {
+            for (ExtraСharge extraСharge : nomenclature.get(number).getSales().getSalesCounter().keySet()) {
+                quantityOfProductSold += nomenclature.get(number).getSales().getSalesCounter().get(extraСharge);
+                switch (extraСharge) {
                     case SEVEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.07);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.07);
                     case EIGHT -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.08);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.08);
                     case TEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.1);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.1);
                     case FIFTEEN -> totalProfit += (nomenclature.get(number).getPurchasePrice() *
-                            nomenclature.get(number).getSales().getSalesCounter().get(markup) * 0.15);
+                            nomenclature.get(number).getSales().getSalesCounter().get(extraСharge) * 0.15);
                 }
             }
             builder.append(nomenclature.get(number)).append(", проданно: ").append(quantityOfProductSold).
                     append(", закупленно: ").append(nomenclature.get(number).getPurchase() * 150).append("\n");
         }
-        builder.append("Общая прибыль ").append(totalProfit).append("\n").append("Расходы на закуп ")
-                .append(expenseOnPurchases);
+        builder.append("Общая прибыль ").append(Math.floor(totalProfit * 100) / 100).append("\n")
+                .append("Расходы на закуп ").append(expenseOnPurchases);
         try (Writer fileWriter = new FileWriter("src\\report.txt")) {
             fileWriter.write(builder.toString());
         } catch (Exception e) {
